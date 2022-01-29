@@ -39,8 +39,8 @@
 
 ---
 
-[GH-Pages]()
+[GH-Pages](https://222alexa.github.io/AHJ-8.1-front/)
 
 [Server](https://chat222-ws.herokuapp.com/)
 
-[![Build status]()
+[![Build status](https://ci.appveyor.com/api/projects/status/b3elghj6d3f1n9m0/branch/main?svg=true)](https://ci.appveyor.com/project/222Alexa44925/ahj-8-1-front/branch/main)

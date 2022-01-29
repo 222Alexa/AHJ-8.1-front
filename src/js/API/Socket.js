@@ -11,6 +11,7 @@ export default class Socket {
     const board = new Board(document.getElementById("container"));
     this.ctrl = new Controller(board);
     this.url = "wss://chat222-ws.herokuapp.com/ws";
+
     this.ws = new WebSocket(this.url);
 
     this.ws.addEventListener("open", (evt) => {
@@ -63,12 +64,13 @@ export default class Socket {
     } else if (msg.type === "exit") {
       const userDel = msg.id;
       this.ctrl.removeUser(userDel);
-      // this.ws.close(); //отсюда ws.close() отключает вообще всех
+      // отсюда ws.close() отключает вообще всех
       // мне надо, чтобы отваливался от WS только тот, кто нажал на кнопку
       // и чтобы заново чат пользователь активировался через ajax
       // и еще при обновлении страницы ws отваливается,
       // но пользователь при этом остается активным
       // пока не придумала как это побеждать
+      // this.ws.close();
     }
   }
 }

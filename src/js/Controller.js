@@ -217,7 +217,8 @@ export default class Controller {
 
     this.socket.sendMessage(data, this.currentUser.name);
     document.querySelectorAll(".user__card").forEach((elem) => elem.remove());
-    this.modal.redrawModalForm();
+    this.socket.ws.close();
+    window.location.reload(); // без этого страница работает некорректно
   }
 
   removeUser(data) {
