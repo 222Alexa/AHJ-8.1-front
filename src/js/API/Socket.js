@@ -10,12 +10,14 @@ export default class Socket {
   init() {
     const board = new Board(document.getElementById("container"));
     this.ctrl = new Controller(board);
-    this.url = "wss://chat222-ws.herokuapp.com/ws";
-
+    this.url = "wss://chat222-ws.herokuapp.com/";
+    //this.url = "ws://localhost:8080/ws";
     this.ws = new WebSocket(this.url);
 
     this.ws.addEventListener("open", (evt) => {
       console.log("connected");
+
+      //this.ctrl.addUser(evt.data);
     });
 
     this.ws.addEventListener("message", (evt) => {
@@ -38,6 +40,7 @@ export default class Socket {
    * обменивается ими с сервером
    */
   sendMessage(data, name) {
+    console.log(this.ws.readyState, "readyState");
     if (this.ws.readyState === WebSocket.OPEN) {
       try {
         const jsonMSG = JSON.stringify(data);
@@ -48,7 +51,7 @@ export default class Socket {
       }
     } else {
       console.log("Соединение разорвано, переподключаю...");
-      this.ws = new WebSocket(this.url, this.currentUser);
+      this.ws = new WebSocket(this.url);
     }
   }
 
@@ -59,18 +62,24 @@ export default class Socket {
 
     if (msg.type === "message") {
       this.ctrl.renderingPost(msg, name);
+    } else if (msg.type === "connect") {
+      this.ctrl.addUser(msg);
     } else if (msg.type === "add") {
       this.ctrl.addUser(msg);
     } else if (msg.type === "exit") {
       const userDel = msg.id;
       this.ctrl.removeUser(userDel);
+
       // отсюда ws.close() отключает вообще всех
       // мне надо, чтобы отваливался от WS только тот, кто нажал на кнопку
-      // и чтобы заново чат пользователь активировался через ajax
-      // и еще при обновлении страницы ws отваливается,
-      // но пользователь при этом остается активным
-      // пока не придумала как это побеждать
-      // this.ws.close();
+      // и чтобы заново чат пользователь активировался через ajax,
+      //window.reload() не особо помогает
+      // на the websocket protocol ходила - не помогло
+      //выяснила, что прерывает соединение тот, кто его инициировал
+      //как это красиво сделать на клиенте,
+      //если сервер "думает",что клиент еще активен
+      //
+      //this.ws.close(1000,"disconnect");
     }
   }
 }

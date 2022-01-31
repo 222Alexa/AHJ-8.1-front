@@ -1,5 +1,6 @@
 const ajaxSend = async (options) => {
   const URL = "https://chat222-ws.herokuapp.com/";
+  //const URL = "http://localhost:8080/";
 
   const requestUrl = `${URL}?${options.query}`;
   console.log(requestUrl, "url");

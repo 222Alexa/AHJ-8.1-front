@@ -63,9 +63,8 @@ export default class Controller {
         response.forEach((elem) => {
           this.renderingAcc(elem, elem.name);
         });
+
         this.createUser(username);
-        this.socket = new Socket(this.currentUser);
-        this.socket.init();
       }
     });
   }
@@ -83,12 +82,14 @@ export default class Controller {
       this.renderingAcc(response, `${response.name}(You)`);
       this.currentUser = response;
 
-      const sendData = {
+      this.sendData = {
         type: "add",
         user: this.currentUser,
       };
-      this.socket.sendMessage(sendData, this.currentUser.name);
     });
+
+    this.socket = new Socket(this.currentUser);
+    this.socket.init();
   }
 
   /**
@@ -192,7 +193,6 @@ export default class Controller {
   keyUp(e) {
     if (e.target.classList.contains("input__message")) {
       if (e.key === "Enter") {
-        console.log(this.currentUser, "this.currentUser");
         const newMessage = this.getMessage();
 
         this.newMessage !== ""
@@ -217,17 +217,24 @@ export default class Controller {
 
     this.socket.sendMessage(data, this.currentUser.name);
     document.querySelectorAll(".user__card").forEach((elem) => elem.remove());
-    this.socket.ws.close();
+
+    //this.socket.ws.close();//отсюда тоже убивается все
+    document.querySelectorAll(".posts__card").forEach((elem) => elem.remove());
+    this.modal.redrawModalForm();
+
     window.location.reload(); // без этого страница работает некорректно
   }
 
   removeUser(data) {
     this.users = document.querySelectorAll(".user__card");
     const userDel = [...this.users].find((elem) => elem.dataset.id === data);
-    if (userDel) userDel.remove();
+    if (userDel) {
+      userDel.remove();
+    }
   }
 
   addUser(data) {
+    console.log(data, "addDAta");
     try {
       this.users = document.querySelectorAll(".user__card");
       const index = [...this.users].findIndex(
